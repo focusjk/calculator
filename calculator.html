@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<title>focus</title>>
+	</head>
+	<body>
+		<div class="card">
+			<div class="monitor">
+				<h1 id="displayedNum"></h1>
+			</div>
+			<div class="container">
+				<button class="item">AC</button>
+				<button class="item">+/-</button>
+				<button class="item">%</button>
+				<button class="item">/</button>
+				<button class="item">7</button>
+				<button class="item">8</button>
+				<button class="item">9</button>
+				<button class="item">*</button>
+				<button class="item">4</button>
+				<button class="item">5</button>
+				<button class="item">6</button>
+				<button class="item">-</button>
+				<button class="item">1</button>
+				<button class="item">2</button>
+				<button class="item">3</button>
+				<button class="item">+</button>
+				<button class="item">0</button>
+				<button class="item">.</button>
+				<button class="item long-item">=</button>
+
+			</div>
+		</div>
+
+	</body>
+</html>
+<script type="text/javascript">
+	let num1 = 0
+	let strNum = '0'
+	let operater = ''
+	let isCalculating = false
+	let isContinue = true
+	
+	document.getElementById("displayedNum").innerHTML = strNum
+	let allButton = document.getElementsByClassName("item")
+	
+	function isNumber(st) {
+		return '0' <= st && st <= '9' 
+	}
+
+	function addNumber(event){
+		let result = ''
+
+		if(strNum === '0' || isContinue === false){
+			result = event
+		}
+		else {
+			result = strNum + event
+		}
+
+		isContinue = true
+		return result
+	}
+	function addDot(){
+		let result = ''
+		if(strNum.indexOf('.') >= 0){
+			alert("error")
+		}
+		else if(isContinue === false) {
+			result = '0.'
+		}
+		else {
+			result += '.'
+		}
+		isContinue = true
+		return result
+	}
+
+	function calculate(){
+		let num2 = parseFloat(strNum)
+		if(operater === '+'){
+			num1 += num2
+		}
+		else if(operater === '-'){
+			num1 -= num2
+		}
+		else if(operater === '*'){
+			num1 *= num2
+		}
+		else if(operater === '/'){
+			if(strNum === '0') {
+				alert('error')
+			}
+			else {
+				num1 /= num2
+			}
+		}
+		operater = ''
+		return num1
+	}
+
+	function addOperater(event){
+		let now = 0
+		
+		if(operater !== '' && isContinue) {
+			num1 = calculate()
+		}
+		else if (isContinue)num1 = parseFloat(strNum)
+
+		operater = event
+		isContinue = false
+		return num1.toString()
+	}
+
+	function resulting(){
+		let ans = ''
+		if(operater !== '') ans = calculate().toString()
+		else ans = strNum
+		isContinue = false
+		return ans
+	}
+
+	function deleteAll(){
+		operater = ''
+		num1 = 0
+		return '0'
+	}
+
+	function percent(){
+		return (parseFloat(strNum)/100).toString()
+	}
+
+	function swift(){
+		return (parseFloat(strNum)*-1).toString()
+	}
+	
+	function onClick(event, index){
+		if('0' <= event && event <= '9' ) 
+			strNum = addNumber(event)
+		else if (event === '.') 
+			strNum = addDot()
+		else if (event === '+' || event === '-' || event === '*' ||event === '/'){ 
+			strNum = addOperater(event)
+		}
+		else if (event === '=') 
+			strNum = resulting()
+		else if (event === 'AC') 
+			strNum = deleteAll()
+		else if (event == '%') 
+			strNum = percent()
+		else if (event == '+/-') 
+			strNum = swift()
+
+		document.getElementById("displayedNum").innerHTML = strNum
+	}
+
+	for(let i=0; i<allButton.length; i++)
+	{
+		allButton[i].addEventListener("click", () => onClick(allButton[i].innerHTML))
+	}
+
+</script>
+<style>
+	.card {
+		font-family: "Comic Sans MS", cursive, sans-serif !important;
+		width: 30%;
+		border: 1px solid lightgray;
+		padding: 20px;
+		background: linear-gradient(#F8B195, #C06C84, #355C7D);
+	}
+	.monitor {
+		text-align: right;
+		margin: 0px 8px 0px 8px;
+	}
+	#displayedNum {
+		border-bottom: 1px solid lightgray;
+		padding: 0 13px 0 0;
+	}
+	.container {
+	 	 text-align: center;
+	 	
+	}
+	.item {
+		font-size: 16px;
+		font-family: "Comic Sans MS", cursive, sans-serif !important;
+		width: 20%;
+		height: auto;
+		padding-top: 5%;
+		padding-bottom: 5%;
+		margin: 3px;
+		background-color: rgba(255,255,255, 0.7);
+		display: inline-block; 
+		border-radius: 5px;
+	}
+	button:active {
+		background-color: rgba(255,255,255, 0.3);
+	}
+	.long-item {
+		width: calc(40% + 10px);
+	}
+</style>
